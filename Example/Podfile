@@ -1,0 +1,12 @@
+use_frameworks!
+
+target 'appdeck-ios-iap_Example' do
+  pod 'appdeck-ios-iap', :path => '../'
+
+  target 'appdeck-ios-iap_Tests' do
+    inherit! :search_paths
+
+    pod 'Specta'
+  pod 'Expecta'
+  end
+end
