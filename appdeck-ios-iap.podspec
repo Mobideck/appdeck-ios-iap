@@ -39,4 +39,8 @@ This plugin allows In-App Purchases to be made from AppDeck iOS
   # s.public_header_files = 'Pod/Classes/**/*.h'
   # s.frameworks = 'UIKit', 'MapKit'
   # s.dependency 'AFNetworking', '~> 2.3'
+
+    s.dependency 'RMStore', '~> 0.7'
+    s.dependency 'IAPHelper'
+
 end
