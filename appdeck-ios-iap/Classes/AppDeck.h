@@ -9,7 +9,6 @@
 #import <Foundation/Foundation.h>
 #import "AppDeckApiCall.h"
 #import "AppDeckUserProfile.h"
-#import "KeyboardStateListener.h"
 
 #define APPDECK_VERSION @"1.10"
 
@@ -18,6 +17,7 @@
 @class CustomWebViewFactory;
 @class LoaderViewController;
 @class LogViewController;
+@class KeyboardStateListener;
 
 @interface AppDeck : NSObject <AppDeckApiCallDelegate>
 {

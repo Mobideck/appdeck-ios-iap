@@ -10,6 +10,8 @@
 
 #import "AppDeckPluginManager.h"
 
+@import StoreKit;
+
 @interface IAPAppDeckPlugin : AppDeckPlugin
 
 @end
