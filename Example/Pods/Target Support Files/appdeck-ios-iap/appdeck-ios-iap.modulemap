@@ -1,0 +1,6 @@
+framework module appdeck_ios_iap {
+  umbrella header "appdeck-ios-iap-umbrella.h"
+
+  export *
+  module * { export * }
+}
