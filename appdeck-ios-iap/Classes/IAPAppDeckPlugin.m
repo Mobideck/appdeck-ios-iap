@@ -19,11 +19,50 @@
 
 + (void)load
 {
-    [AppDeckPluginManager registerAppDeckPlugin:[[self alloc] init] withCommands:@[@"ipasetup", @"iappurchase", @"iaplistproduct", @"iaprestore", @"iapgetreceipt"]];
+    [AppDeckPluginManager registerAppDeckPlugin:[[self alloc] init] withCommands:@[@"iapsetup", @"iaplistproduct", @"iappurchase", @"iapconsume", @"iapsubscription", @"iaprestore", @"iapgetreceipt"]];
 }
 
 -(BOOL)iapsetup:(AppDeckApiCall *)call
 {
+    return YES;
+}
+
+-(BOOL)iaplistproduct:(AppDeckApiCall *)call
+{
+    id productIds = call.param;
+    
+    if (![productIds isKindOfClass:[NSArray class]]) {
+        [call sendCallBackWithErrorMessage:@"ProductIds must be an array"];
+        return NO;
+    }
+    
+    NSSet *products = [NSSet setWithArray:productIds];
+    
+    NSLog(@"Products: %@", products);
+    
+    [[RMStore defaultStore] requestProducts:products success:^(NSArray *products, NSArray *invalidProductIdentifiers) {
+        
+        NSMutableDictionary *result = [NSMutableDictionary dictionary];
+        NSMutableArray *validProducts = [NSMutableArray array];
+        for (SKProduct *product in products) {
+            [validProducts addObject:@{
+                                       @"productId": NILABLE(product.productIdentifier),
+                                       @"title": NILABLE(product.localizedTitle),
+                                       @"description": NILABLE(product.localizedDescription),
+                                       @"price": NILABLE([RMStore localizedPriceOfProduct:product]),
+                                       }];
+        }
+        [result setObject:validProducts forKey:@"products"];
+        [result setObject:invalidProductIdentifiers forKey:@"invalidProductsIds"];
+        
+        NSLog(@"Result: %@", result);
+        
+        [call sendCallbackWithResult:@[result]];
+        
+    } failure:^(NSError *error) {
+        NSLog(@"Error: %@", error);
+        [call sendCallBackWithError:error];
+    }];
     return YES;
 }
 
@@ -86,42 +125,13 @@
     return YES;
 }
 
--(BOOL)iaplistproduct:(AppDeckApiCall *)call
+-(BOOL)iapconsume:(AppDeckApiCall *)call
 {
-    id productIds = call.param;
-    
-    if (![productIds isKindOfClass:[NSArray class]]) {
-        [call sendCallBackWithErrorMessage:@"ProductIds must be an array"];
-        return NO;
-    }
-    
-    NSSet *products = [NSSet setWithArray:productIds];
-    
-    NSLog(@"Products: %@", products);
-    
-    [[RMStore defaultStore] requestProducts:products success:^(NSArray *products, NSArray *invalidProductIdentifiers) {
-        
-        NSMutableDictionary *result = [NSMutableDictionary dictionary];
-        NSMutableArray *validProducts = [NSMutableArray array];
-        for (SKProduct *product in products) {
-            [validProducts addObject:@{
-                                       @"productId": NILABLE(product.productIdentifier),
-                                       @"title": NILABLE(product.localizedTitle),
-                                       @"description": NILABLE(product.localizedDescription),
-                                       @"price": NILABLE([RMStore localizedPriceOfProduct:product]),
-                                       }];
-        }
-        [result setObject:validProducts forKey:@"products"];
-        [result setObject:invalidProductIdentifiers forKey:@"invalidProductsIds"];
-    
-        NSLog(@"Result: %@", result);
-        
-        [call sendCallbackWithResult:@[result]];
+    return [self iappurchase:call];
+}
 
-    } failure:^(NSError *error) {
-        NSLog(@"Error: %@", error);
-        [call sendCallBackWithError:error];
-    }];
+-(BOOL)iapsubscription:(AppDeckApiCall *)call
+{
     return YES;
 }
 
