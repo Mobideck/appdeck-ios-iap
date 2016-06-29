@@ -57,7 +57,7 @@
         
         NSLog(@"Result: %@", result);
         
-        [call sendCallbackWithResult:@[result]];
+        [call sendCallbackWithResult:@[validProducts]];
         
     } failure:^(NSError *error) {
         NSLog(@"Error: %@", error);
