@@ -29,7 +29,7 @@
 
 -(BOOL)iaplistproduct:(AppDeckApiCall *)call
 {
-    id productIds = call.param;
+    id productIds = [call.param objectForKey:@"productIds"];
     
     if (![productIds isKindOfClass:[NSArray class]]) {
         [call sendCallBackWithErrorMessage:@"ProductIds must be an array"];
