@@ -66,7 +66,7 @@
     return YES;
 }
 
--(BOOL)iappurchase:(AppDeckApiCall *)call
+-(BOOL)iappurchasegen:(AppDeckApiCall *)call
 {
     id productId = [call.param objectForKey:@"productId"];
     if (![productId isKindOfClass:[NSString class]]) {
@@ -100,8 +100,10 @@
                     NSData *receiptData = [NSData dataWithContentsOfURL:receiptURL];
                     NSString *encReceipt = [receiptData base64EncodedStringWithOptions:0];
                     NSDictionary *result = @{
+                                             @"productType": lastProductType,
                                              @"transactionId": NILABLE(transaction.transactionIdentifier),
-                                             @"receipt": NILABLE(encReceipt)
+                                             @"receipt": NILABLE(encReceipt),
+                                             @"signature": NILABLE(transaction.transactionIdentifier)
                                              };
                     NSLog(@"Result: %@", result);
                     [appdeckProgressHUD hide];
@@ -125,11 +127,19 @@
     return YES;
 }
 
+-(BOOL)iappurchase:(AppDeckApiCall *)call
+{
+    lastProductType = @"purchase";
+    return [self iappurchasegen:call];
+}
+
 -(BOOL)iapconsume:(AppDeckApiCall *)call
-{    
+{
     __block AppDeckApiCall *mycall = call;
+    NSLog(@"iapconsume: %@", call.param);
     dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void) {
         dispatch_async(dispatch_get_main_queue(), ^{
+            NSLog(@"iapconsume: callback");
             [mycall sendCallbackWithResult:@[[NSNumber numberWithBool:YES]]];
         });
     });
@@ -138,7 +148,8 @@
 
 -(BOOL)iapsubscription:(AppDeckApiCall *)call
 {
-    return [self iappurchase:call];
+    lastProductType = @"subscription";
+    return [self iappurchasegen:call];
 }
 
 -(BOOL)iaprestore:(AppDeckApiCall *)call

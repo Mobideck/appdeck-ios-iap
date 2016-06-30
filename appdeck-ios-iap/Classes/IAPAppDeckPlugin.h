@@ -13,5 +13,7 @@
 @import StoreKit;
 
 @interface IAPAppDeckPlugin : AppDeckPlugin
-
+{
+    NSString *lastProductType;
+}
 @end
