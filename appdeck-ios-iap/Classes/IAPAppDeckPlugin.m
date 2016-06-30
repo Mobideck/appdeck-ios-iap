@@ -155,7 +155,7 @@
         }
         [result setObject:validTransactions forKey:@"transactions"];
         
-        [call sendCallbackWithResult:@[result]];
+        [call sendCallbackWithResult:@[validTransactions]];
     } failure:^(NSError *error) {
         [call sendCallBackWithError:error];
     }];
