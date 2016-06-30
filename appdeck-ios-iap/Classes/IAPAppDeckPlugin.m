@@ -127,6 +127,7 @@
 
 -(BOOL)iapconsume:(AppDeckApiCall *)call
 {
+    [call sendCallbackWithResult:@[]];
     return YES;
 }
 
