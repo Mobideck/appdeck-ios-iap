@@ -127,12 +127,12 @@
 
 -(BOOL)iapconsume:(AppDeckApiCall *)call
 {
-    return [self iappurchase:call];
+    return YES;
 }
 
 -(BOOL)iapsubscription:(AppDeckApiCall *)call
 {
-    return YES;
+    return [self iappurchase:call];
 }
 
 -(BOOL)iaprestore:(AppDeckApiCall *)call
