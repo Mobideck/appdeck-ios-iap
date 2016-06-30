@@ -126,8 +126,13 @@
 }
 
 -(BOOL)iapconsume:(AppDeckApiCall *)call
-{
-    [call sendCallbackWithResult:@[]];
+{    
+    __block AppDeckApiCall *mycall = call;
+    dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [mycall sendCallbackWithResult:@[[NSNumber numberWithBool:YES]]];
+        });
+    });
     return YES;
 }
 
